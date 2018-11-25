@@ -7,6 +7,8 @@ import os
 
 from encoder_models import *
 
+from datetime import datetime
+
 class Trainer(object):
     def __init__(self, train_loader, test_loader, config):
         self.train_loader = train_loader
@@ -24,8 +26,8 @@ class Trainer(object):
         self.log_interval = config.log_interval
         self.sample_interval = config.sample_interval
         self.ckpt_interval = config.ckpt_interval
-
-        self.sample_folder = config.sample_folder
+ 
+        self.sample_folder = datetime.today() + '_' + config.sample_folder  
         self.ckpt_folder = config.ckpt_folder
 
         self.build_net()
