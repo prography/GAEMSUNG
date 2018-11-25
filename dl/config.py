@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--dataroot', type=str, default=None, help='root path to dataset directory')
 parser.add_argument('--batch_size', type=int, default=128, help='data batch size')
 parser.add_argument('--shuffle', type=bool, default=True, help='whether using shuffle on training set')
-parser.add_argument('--num_workers', type=int, default=0, help='number of workers generating batch')
+parser.add_argument('--num_workers', type=int, default=2, help='number of workers generating batch')
 
 # Network structure configurations
 parser.add_argument('--image_size', type=int, default=28, help='image size')
@@ -29,6 +29,9 @@ parser.add_argument('--ckpt_interval', type=int, default=100, help='epoch interv
 
 # Execution mode configuration
 parser.add_argument('--mode', type=str, default='train', choices=['train', 'test'], help='train/test mode selection')
+
+# Auto-encoder settings
+parser.add_argument('--encoder',type=str, default='VAE', choices=['AE', 'VAE'], help='AE: AutoEncoder, VAE: VariationalAutoEncoder')
 
 def get_config():
     return parser.parse_args()

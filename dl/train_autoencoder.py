@@ -56,8 +56,6 @@ def main(config):
 
     if config.mode == 'train':
         trainer.train()
-    elif config.mode == 'test':
-        trainer.eval()
 
 if __name__ == "__main__":
     config = get_config()

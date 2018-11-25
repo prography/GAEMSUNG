@@ -32,7 +32,13 @@ class Trainer(object):
 
     def build_net(self):
         # define network
-        self.net = AutoEncoder(self.image_size, self.hidden_dim, self.output_dim)
+        if self.config.encoder == 'AE':
+            self.net = AutoEncoder(self.image_size, self.hidden_dim, self.output_dim)
+        elif self.config.encoer == 'VAE':
+            self.net = VAE(self.image_size, self.hidden_dim, self.output_dim)
+        else:
+            print("Please Select Auto Encoder Mode")
+            exit()
 
         if self.config.mode == 'test' and self.config.training_path == '':
             print("[*] Enter model path!")
