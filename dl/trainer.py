@@ -3,11 +3,11 @@ import torch.nn as nn
 from torch.optim import Adam
 from torchvision.utils import save_image
 
+from datetime import datetime
+
 import os
 
 from encoder_models import *
-
-from datetime import datetime
 
 class Trainer(object):
     def __init__(self, train_loader, test_loader, config):
@@ -27,8 +27,8 @@ class Trainer(object):
         self.sample_interval = config.sample_interval
         self.ckpt_interval = config.ckpt_interval
  
-        self.sample_folder = datetime.today() + '_' + config.sample_folder  
-        self.ckpt_folder = config.ckpt_folder
+        self.sample_folder = config.sample_folder  
+        self.ckpt_folder =  config.ckpt_folder
 
         self.build_net()
 
@@ -36,7 +36,7 @@ class Trainer(object):
         # define network
         if self.config.encoder == 'AE':
             self.net = AutoEncoder(self.image_size, self.hidden_dim, self.output_dim)
-        elif self.config.encoer == 'VAE':
+        elif self.config.encoder == 'VAE':
             self.net = VAE(self.image_size, self.hidden_dim, self.output_dim)
         else:
             print("Please Select Auto Encoder Mode")
@@ -52,6 +52,12 @@ class Trainer(object):
             print("[*] Load weight from {}!".format(self.config.training_path))
 
         self.net.to(self.device)
+
+    def loss_function(self, recon_x, x, mu, logvar):
+        criterion = nn.BCELoss(reduction='sum').to(self.device)
+        bce = criterion(recon_x, x.view(-1, self.image_size**2))
+        kld = -0.5 * torch.sum(1 + logvar-mu**2 - logvar.exp())
+        return bce + kld
 
     def train(self):
         # define loss function
@@ -84,29 +90,50 @@ class Trainer(object):
                 imgs = imgs.to(self.device)
 
                 # forwarding
-                outputs = self.net(imgs)
-                bce_loss = bce_criterion(outputs, imgs)
-                mse_loss = mse_criterion(outputs, imgs)
+                if self.config.encoder == 'AE':
+                    outputs = self.net(imgs)
+                    bce_loss = bce_criterion(outputs, imgs)
+                    mse_loss = mse_criterion(outputs, imgs)
 
-                # backwarding
-                optimizer.zero_grad()
-                bce_loss.backward()
-                optimizer.step()
+                     # backwarding
+                    optimizer.zero_grad()
+                    bce_loss.backward()
+                    optimizer.step()
 
-                # do logging
-                if (step+1) % self.log_interval == 0:
-                    print("[{}/{}] [{}/{}] BCE loss:{:3f} MSE loss:{:3f}".format(
-                        epoch+1, self.num_epochs, i+1, len(self.train_loader), bce_loss.item(), mse_loss.item())
-                    )
+                    # do logging
+                    if (step+1) % self.log_interval == 0:
+                        print("[{}/{}] [{}/{}] BCE loss:{:3f} MSE loss:{:3f}".format(
+                            epoch+1, self.num_epochs, i+1, len(self.train_loader), bce_loss.item(), mse_loss.item())
+                        )
 
-                # do sampling
-                if (step+1) % self.sample_interval == 0:
-                    outputs = self.net(fixed_imgs)
-                    x_hat = outputs.cpu().data.view(outputs.size(0), -1, self.image_size, self.image_size)
-                    x_hat_path = os.path.join(self.sample_folder, 'output_epoch{}.png'.format(epoch+1))
-                    save_image(x_hat, x_hat_path)
+                    # do sampling
+                    if (step+1) % self.sample_interval == 0:
+                        outputs = self.net(fixed_imgs)
+                        x_hat = outputs.cpu().data.view(outputs.size(0), -1, self.image_size, self.image_size)
+                        x_hat_path = os.path.join(self.sample_folder, 'output_epoch{}.png'.format(epoch+1))
+                        save_image(x_hat, x_hat_path)
 
-                    print("[*] Save sample images!")
+                        print("[*] Save sample images!")
+
+                elif self.config.encoder == 'VAE':
+                    recon, mu, logvar = self.net(imgs)
+                    loss = self.loss_function(recon, imgs, mu, logvar)
+
+                    # backwarding 
+                    optimizer.zero_grad()
+                    loss.backward()
+                    optimizer.step()
+
+                    if (step+1) % self.log_interval == 0:
+                        print("[{}/{}] [{}/{}] Loss:{:3f}".format(epoch+1, self.num_epochs, i+1, len(self.train_loader), loss.item()/len(imgs)))
+                    
+                    if (step+1) % self.sample_interval == 0:
+                        recon, mu, logvar = self.net(fixed_imgs)
+                        recon = recon.view(-1,1, self.image_size, self.image_size)
+                        x_hat_path = os.path.join(self.sample_folder, 'output_epoch{}.png'.format(epoch+1))
+                        save_image(recon, x_hat_path)
+
+                        print("[*] Save sample images!")
 
                 step += 1
 

@@ -1,2 +1,14 @@
 # mac OS 
 *.DS_Store
+dl/.vscode
+dl/data
+
+#python compile file
+*.pyc
+
+# image file
+*.png
+
+# pytorch weight file
+*.pth
+

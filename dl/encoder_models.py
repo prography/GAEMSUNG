@@ -1,4 +1,5 @@
 import torch.nn as nn
+import torch
 
 class AutoEncoder(nn.Module):
     def __init__(self, image_size, hidden_dim, output_dim):

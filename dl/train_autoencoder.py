@@ -14,15 +14,17 @@ from trainer import Trainer
 from config import get_config
 from dataloader import get_loader
 
+from datetime import datetime
+
 def main(config):
     # make directory
     if config.ckpt_folder is None:
-        config.ckpt_folder = 'checkpoints'
+        config.ckpt_folder = 'checkpoints/' + str(datetime.today().strftime("%Y%m%d%H%M"))+ '_' + str(config.encoder)
     os.system('mkdir {0}'.format(config.ckpt_folder))
     print("[*] Make checkpoints folder!")
 
     if config.sample_folder is None:
-        config.sample_folder = 'samples'
+        config.sample_folder = 'samples/' + str(datetime.today().strftime("%Y%m%d%H%M"))+ '_' + str(config.encoder)
     os.system('mkdir {0}'.format(config.sample_folder))
     print("[*] Make samples folder!")
 
