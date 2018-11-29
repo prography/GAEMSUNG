@@ -50,7 +50,7 @@ def main(args):
         f_p_month = f_period.split('_')[1]
         f_p_day = f_period.split('_')[2]
 
-
+    print(i_p_year, i_p_month ,i_p_day, f_p_year, f_p_month ,f_p_day)
     google_crawler = GoogleImageCrawler(
     feeder_threads=1,
     parser_threads=2,
@@ -61,9 +61,10 @@ def main(args):
         #size = args.image_size,
         #color= args.color,
         license='commercial,modify',
-        date=((i_p_year, i_p_month, i_p_day), (f_p_year, f_p_month, f_p_day)))
+        date=((int(i_p_year), int(i_p_month), int(i_p_day)), (int(f_p_year), int(f_p_month), int(f_p_day)))
+    )
 
-    google_crawler.crawl(keyword=args.key, filters=filters, max_num=100, file_idx_offset=0)    
+    google_crawler.crawl(keyword=args.key, filters=filters, max_num=1000, file_idx_offset=0)    
 
 
 if __name__ == '__main__':
