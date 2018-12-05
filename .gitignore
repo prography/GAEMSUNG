@@ -8,7 +8,9 @@ dl/data
 
 # image file
 *.png
-
+*.jpg
+*.JPG
+!img/thumbnail.png
 # pytorch weight file
 *.pth
 
