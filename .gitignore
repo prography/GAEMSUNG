@@ -8,7 +8,24 @@ dl/data
 
 # image file
 *.png
+*.jpg
+*.JPG
+*.jpeg
+*.gif
+!img/thumbnail.png
 
 # pytorch weight file
 *.pth
 
+*.xml
+*.iml
+
+
+# model file
+*.pth
+
+
+# zip, tar file
+*.tar
+*.zip
+*.tar.gz
