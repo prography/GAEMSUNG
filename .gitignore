@@ -14,3 +14,8 @@ dl/data
 # pytorch weight file
 *.pth
 
+/week2_Crawling_and_classification/data
+
+*.xml
+*.iml
+*.pyc
