@@ -1,2 +1,15 @@
 # mac OS 
 *.DS_Store
+
+# image file
+*.jpg
+*.JPG
+*.png
+*.jpeg
+*.gif
+
+# pytorch model
+*.pth
+
+# python compile file
+*.pyc
