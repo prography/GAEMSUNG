@@ -11,6 +11,7 @@ import torchvision.transforms as transforms
 
 import os
 import argparse
+import sys
 
 from mobilenetv2 import MobileNetV2
 
@@ -34,17 +35,23 @@ def main(args):
     trainset = torchvision.datasets.ImageFolder(root='datasets/train', transform=transform_train)
     train_loader = torch.utils.data.DataLoader(trainset, batch_size=128, shuffle=True, num_workers=4)
 
+    testset = torchvision.datasets.ImageFolder(root='datasets/train', transform=transforms_test)
+    test_loader = torch.utils.data.DataLoader(testset, batch_size=128, shuffle=False, num_workers=4)
+
     # Model
     print('[*] Building model...')
-    net = MobileNetV2(n_class=128)
-    state_dict = torch.load('models/mobilenetv2.pth.tar')
+    net = MobileNetV2(n_class=1000)
+    state_dict = torch.load('models/mobilenet_v2.pth.tar')
     net.load_state_dict(state_dict)
 
     if device  == 'cuda':
         net = torch.nn.DataParallel(net)
         cudnn.benchmark = True
     
-    outputs = net(inputs)
+    dataiter = iter(test_loader)
+    images, labels = dataiter.next()
+
+    outputs = net(images)
     print('output shape: ', outputs.data.shape)
 
     with open('cafeimage_embeddings.csv','wb') as f:
