@@ -1,0 +1,6 @@
+classes=18
+train=Simpson/trainList.txt
+valid=Simpson/evalList.txt
+names=Simpson/simpson.names
+backup=backup/
+eval=simpson

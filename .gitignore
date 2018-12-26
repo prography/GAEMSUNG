@@ -3,3 +3,6 @@
 *.xml
 *.iml
 *.pyc
+/week3_Object_Detection/weights
+/week3_Object_Detection/images
+/week3_Object_Detection/labels
