@@ -1,8 +1,27 @@
+# mac OS 
+*.DS_Store
+dl/.vscode
+dl/data
+
+#python compile file
+*.pyc
+
+# image file
+*.png
+*.jpg
+*.JPG
+!img/thumbnail.png
+# pytorch weight file
+*.pth
+
 /week2_Crawling_and_classification/data
 
 *.xml
 *.iml
 *.pyc
+<<<<<<< HEAD
 /week3_Object_Detection/weights
 /week3_Object_Detection/images
 /week3_Object_Detection/labels
+=======
+>>>>>>> f620d7ea8afd1a7cb24ed2d98c3e43d2a9e3fbff
