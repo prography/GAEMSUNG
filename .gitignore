@@ -8,10 +8,13 @@ dl/data
 
 # image file
 *.png
+*.PNG
 *.jpg
 *.JPG
 *.jpeg
+*.JPEG
 *.gif
+*.bmp
 !img/thumbnail.png
 
 # pytorch weight file
