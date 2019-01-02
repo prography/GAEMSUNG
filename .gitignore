@@ -25,3 +25,6 @@ dl/data
 /week3_Object_Detection/labels
 =======
 >>>>>>> f620d7ea8afd1a7cb24ed2d98c3e43d2a9e3fbff
+/week5_Chair_Detection/weights
+/week5_Chair_Detection/config
+/week5_Chair_Detection/data
