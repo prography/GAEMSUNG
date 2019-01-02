@@ -9,14 +9,14 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 
-input_path = './test_images'
+input_path = './test_images/train'
 files = os.listdir(input_path)
 
 img2vec = Img2Vec()
 vec_length = 512  # Using resnet-18 as default
 
 samples = len(files)  # Amount of samples to take from input path
-k_value = 2  # How many clusters
+k_value = 10   # How many clusters
 
 # Matrix to hold the image vectors
 vec_mat = np.zeros((samples, vec_length))

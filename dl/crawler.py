@@ -17,7 +17,8 @@ def make_dir(input_path):
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
-    parser.add_argument('key', type=str, default=None, help='search word')
+    #parser.add_argument('key1', type=str, default=None, help='search word')
+    #parser.add_argument('key2', type=str, default=None, help='search word')
     parser.add_argument('--save_path', type=str, default='crawlingData', help='root path to crawling directory')
     parser.add_argument('--image_size', type=str, default=None, help='image size filter')
     parser.add_argument('--color', type=str, default=None, help='image color filter')
@@ -64,7 +65,23 @@ def main(args):
         date=((int(i_p_year), int(i_p_month), int(i_p_day)), (int(f_p_year), int(f_p_month), int(f_p_day)))
     )
 
-    google_crawler.crawl(keyword=args.key, filters=filters, max_num=1000, file_idx_offset=0)    
+    #google_crawler.crawl(keyword=args.key1, filters=filters, max_num=1000, file_idx_offset=0)
+    #google_crawler.crawl(keyword=args.key2, filters=filters, max_num=1000, file_idx_offset='auto')
+    #google_crawler.crawl(keyword=args.key2, filters=filters, max_num=1000, file_idx_offset='auto')
+    
+    google_crawler.crawl(keyword='cafe', filters=filters, max_num=1000, file_idx_offset='auto')
+    google_crawler.crawl(keyword='coffee shop', filters=filters,
+                         max_num=1000, file_idx_offset='auto')
+    google_crawler.crawl(keyword='coffee house',
+                         filters=filters, max_num=1000, file_idx_offset='auto')
+    google_crawler.crawl(keyword='カフェ', filters=filters,
+                         max_num=1000, file_idx_offset='auto')
+    google_crawler.crawl(keyword='카페', filters=filters,
+                         max_num=1000, file_idx_offset='auto')
+    google_crawler.crawl(keyword='コーヒーショップ', filters=filters,
+                         max_num=1000, file_idx_offset='auto')
+    google_crawler.crawl(keyword='咖啡店', filters=filters,
+                         max_num=1000, file_idx_offset='auto')
 
 
 if __name__ == '__main__':
@@ -72,4 +89,3 @@ if __name__ == '__main__':
 
 
     
-
