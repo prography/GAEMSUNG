@@ -1,0 +1,11 @@
+*.weights
+
+__pyache__/
+
+crawlingData/
+
+checkpoints/
+
+data/
+
+
