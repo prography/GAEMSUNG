@@ -1,11 +1,7 @@
-"""
-input: one image
-output: 5 images
-"""
 import torch
 import torch.nn as nn
 import torchvision.transforms as T
-from torchvision.datasets import CIFAR10
+from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
 
 import os
@@ -16,6 +12,7 @@ import cv2
 from dataloader import get_loader
 from model import ConvolutionalAE
 from config import get_config
+from torchvision.utils import save_image
 
 class Finder(object):
     def __init__(self, config):
@@ -42,7 +39,7 @@ class Finder(object):
             T.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
         ])
 
-        self.dataset = CIFAR10(config.dataroot, train=False, transform=self.transform, download=True)
+        self.dataset = MNIST(config.dataroot, train=False, transform=self.transform, download=True)
         self.dataloader = DataLoader(self.dataset, batch_size=1, shuffle=False, num_workers=config.num_workers)
 
         self.load_net()
@@ -62,10 +59,9 @@ class Finder(object):
         self.net.eval()
 
     def find_topn(self):
-        input_image = self.transform(Image.open(self.img_path)).unsqueeze(0)
-        embedded = self.net.encoder(input_image)
 
-        dist_list = []
+        eu_dist_list = []
+        ae_dist_list = []
         criterion = nn.MSELoss().to(self.device)
 
         # for path in self.candidate_list:
@@ -76,37 +72,65 @@ class Finder(object):
         #     dist_list.append(dist.item())
 
         dataiter = iter(self.dataloader)
+        sample = next(dataiter)[0]
+        embedded = self.net.encoder(sample) # 1, 20, 2, 2
+        save_image(sample, "assets/sample.jpg", normalize=True)
 
+        ### compare with euclidian distance ###
+        for candid_image, _ in dataiter:
+            # print(candid_image.shape)
+            # print(sample.shape)
+            eu_dist = torch.dist(candid_image, sample)
+            eu_dist_list.append(eu_dist.item())
+
+        dataiter = iter(self.dataloader)
+
+        ### compare with auto encoder ###
         for candid_image, _ in dataiter:
             candid_image = candid_image.to(self.device)
-            embedded_candid = self.net.encoder(candid_image)
-            # print(embedded_candid)
+            embedded_candid = self.net.encoder(candid_image) # 1, 20, 2, 2
             dist = criterion(embedded_candid, embedded)
-            # print(dist.item())
-            dist_list.append(dist.item())
 
-        dist_argsorted = np.argsort(dist_list)
+            # print(dist.item())
+            ae_dist_list.append(dist.item())
+
+        eu_dist_argsorted = np.argsort(eu_dist_list)
+        ae_dist_argsorted = np.argsort(ae_dist_list)
+
+        print(eu_dist_argsorted)
+        print(ae_dist_argsorted)
 
         for i in range(self.num_find):
-            print("arg:", dist_argsorted[i])
+            print("arg:", eu_dist_argsorted[i])
 
-            img, _ = self.dataset[dist_argsorted[i]]
+            img, _ = self.dataset[eu_dist_argsorted[i]]
             img = img.detach().cpu().numpy()
             img = np.transpose(img, (1, 2, 0))
 
-            r, g, b = cv2.split(img)
-            img = cv2.merge([b, g, r])
+            # r, g, b = cv2.split(img)
+            # img = cv2.merge([b, g, r])
 
-            cv2.imshow('Similar image', img)
+            cv2.imshow('Similar image computed by EU dist', img)
             cv2.waitKey(0)
+            # cv2.imwrite("assets/EU_similar_%d.jpg" % i, img)
+
+
+        for i in range(self.num_find):
+            print("arg:", ae_dist_argsorted[i])
+
+            img, _ = self.dataset[ae_dist_argsorted[i]]
+            img = img.detach().cpu().numpy()
+            img = np.transpose(img, (1, 2, 0))
+
+            # r, g, b = cv2.split(img)
+            # img = cv2.merge([b, g, r])
+
+            cv2.imshow('Similar image computed by AE dist', img)
+            cv2.waitKey(0)
+            # cv2.imwrite("assets/AE_similar_%d.jpg" % i, img)
+
 
 if __name__ == '__main__':
     config = get_config()
     finder = Finder(config)
     finder.find_topn()
-
-
-
-
-
-

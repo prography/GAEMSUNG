@@ -60,6 +60,7 @@ class Trainer(object):
 
     def train(self):
         # define loss function
+        bce_criterion = nn.BCELoss().to(self.device)
         mse_criterion = nn.MSELoss().to(self.device)
 
         # define optimizer
@@ -98,19 +99,22 @@ class Trainer(object):
 
                 # forwarding
                 outputs = self.net(noisy_imgs)  # use noisy image as input
+                bce_loss = bce_criterion(outputs, imgs)
                 mse_loss = mse_criterion(outputs, imgs)
 
                 # backwarding
                 optimizer.zero_grad()
-                mse_loss.backward()
+                bce_loss.backward() # backward BCE loss
                 optimizer.step()
 
                 # do logging
                 if (step + 1) % self.log_interval == 0:
-                    print("[{}/{}] [{}/{}] MSE loss:{:3f}".format(
-                        epoch + 1, self.num_epochs, i + 1, len(self.train_loader), mse_loss.item())
+                    print("[{}/{}] [{}/{}] BCE loss: {:3f}, MSE loss:{:3f}".format(
+                        epoch + 1, self.num_epochs, i + 1, len(self.train_loader), bce_loss.item() / len(imgs),
+                        mse_loss.item() / len(imgs))
                     )
-                    self.vis.plot("Loss plot", mse_loss.item())
+                    self.vis.plot("BCE Loss plot", bce_loss.item() / len(imgs))
+                    self.vis.plot("MSE Loss plot", mse_loss.item() / len(imgs))
 
                 # do sampling
                 if (step + 1) % self.sample_interval == 0:

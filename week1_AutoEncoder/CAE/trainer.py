@@ -51,7 +51,7 @@ class Trainer(object):
 
     def train(self):
         # define loss function
-        criterion = nn.MSELoss().to(self.device)
+        mse_criterion = nn.MSELoss().to(self.device)
 
         # define optimizer
         optimizer = Adam(self.net.parameters(), self.lr, weight_decay=self.weight_decay)
@@ -76,7 +76,7 @@ class Trainer(object):
 
                 # forwarding and compute loss
                 outputs = self.net(imgs)
-                loss = criterion(outputs, imgs)
+                loss = mse_criterion(outputs, imgs)
 
                 # backwarding
                 optimizer.zero_grad()

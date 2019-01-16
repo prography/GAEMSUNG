@@ -3,13 +3,13 @@ import argparse
 parser = argparse.ArgumentParser()
 
 # Data configurations
-parser.add_argument('--dataroot', type=str, default='../SAE/data', help='root path to dataset directory')
+parser.add_argument('--dataroot', type=str, default='./data', help='root path to dataset directory')
 parser.add_argument('--batch_size', type=int, default=128, help='data batch size')
 parser.add_argument('--shuffle', type=bool, default=True, help='whether using shuffle on training set')
 parser.add_argument('--num_workers', type=int, default=0, help='number of workers generating batch')
 
 # Network structure configurations
-parser.add_argument('--in_channel', type=int, default=3, help='number of image channel')
+parser.add_argument('--in_channel', type=int, default=1, help='number of image channel')
 parser.add_argument('--image_size', type=int, default=28, help='image size')
 parser.add_argument('--hidden_dim', type=int, default=400, help='dimension of hidden units')
 parser.add_argument('--output_dim', type=int, default=20, help='dimension of encoder output')
@@ -34,7 +34,7 @@ parser.add_argument('--mode', type=str, default='train', choices=['train', 'test
 
 # In finding phase
 parser.add_argument('--num_find', type=int, default=5, help='number of candidate images picked')
-parser.add_argument('--img_path', type=str, default='assets/test_airplane.jpg', help='input image path')
+parser.add_argument('--img_path', type=str, default='assets/sample.jpg', help='input image path')
 parser.add_argument('--candidate_path', type=str, default=None, help='candidate directory path')
 parser.add_argument('--model_path', type=str, default='checkpoints/final_model.pth', help='model weight path')
 

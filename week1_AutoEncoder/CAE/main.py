@@ -52,8 +52,6 @@ def main(config):
                                            transform=transform,
                                            num_workers=config.num_workers)
 
-
-
     if config.mode == 'train':
         # define trainer class
         trainer = Trainer(train_loader, test_loader, config)

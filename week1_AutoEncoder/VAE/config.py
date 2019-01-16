@@ -9,8 +9,8 @@ parser.add_argument('--shuffle', type=bool, default=True, help='whether using sh
 parser.add_argument('--num_workers', type=int, default=0, help='number of workers generating batch')
 
 # Network structure configurations
-parser.add_argument('--in_channel', type=int, default=3, help='number of image channel')
-parser.add_argument('--image_size', type=int, default=32, help='image size')
+parser.add_argument('--in_channel', type=int, default=1, help='number of image channel')
+parser.add_argument('--image_size', type=int, default=28, help='image size')
 parser.add_argument('--hidden_dim', type=int, default=400, help='dimension of hidden units')
 parser.add_argument('--output_dim', type=int, default=20, help='dimension of encoder output')
 
