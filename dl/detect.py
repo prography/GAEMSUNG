@@ -28,7 +28,6 @@ class yoloDetector():
 
     def load_weights(self):
         self.model.load_weights(self.weights_path)
-        print("Load trained weight file completed!!!")
     
     def detect(self, input_image_path):
         # prepare input image tensor
